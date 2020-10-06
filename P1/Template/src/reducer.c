@@ -45,14 +45,14 @@ void freeFinalDS(finalKeyValueDS *root) {
 // reduce function
 void reduce(char *key) {
 	char filename[256];
-	//int i; //,count;
+	int temp; //,count;
 	//count = 0;
 	int count = 0;
 	FILE* fp = fopen(key, "r");
 	fscanf(fp, "%s", filename);
 	
-	while(fgetc(fp) != EOF){
-		if(fgetc(fp) == 1){
+	while(temp = fgetc(fp) != EOF){
+		if(temp == 1){
 			count++;
 		}
 	}
