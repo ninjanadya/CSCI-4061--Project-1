@@ -1,4 +1,8 @@
 #include "mapper.h"
+#include <stdio.h>
+
+
+extern struct intermediateDS* IDS;
 
 // combined value list corresponding to a word <1,1,1,1....>
 valueList *createNewValueListNode(char *value){
@@ -52,7 +56,7 @@ intermediateDS *insertPairToInterDS(intermediateDS *root, char *word, char *coun
 			return root;
 		}
 		tempNode = tempNode -> next;
-		
+
 	}
 	if(strcmp(tempNode -> key, word) == 0){
 		tempNode -> value = insertNewValueToList(tempNode -> value, count);
@@ -75,47 +79,67 @@ void freeInterDS(intermediateDS *root) {
 	}
 }
 
-// emit the <key, value> into intermediate DS 
+// emit the <key, value> into intermediate DS
 void emit(char *key, char *value) {
-
+	//printf("in emit\nkey %s value %s", key, value);
+	IDS = insertPairToInterDS(IDS, key, value);
 }
 
 // map function
 void map(char *chunkData){
-	
-	// you can use getWord to retrieve words from the 
+	printf("in map\n");
+	// you can use getWord to retrieve words from the
 	// chunkData one by one. Example usage in utils.h
+	int i = 0;
+	char *buffer;
+	char value = '1';
+	while ((buffer = getWord(chunkData, &i)) != NULL){
+		emit(buffer, &value);
+	}
 }
 
 // write intermediate data to separate word.txt files
 // Each file will have only one line : word 1 1 1 1 1 ...
 void writeIntermediateDS() {
-	
+	struct intermediateDS* temp = IDS;
+	FILE* fp;
+	while (temp -> next != NULL){
+		fp = fopen(strcat(temp -> key, ".txt"), "w");
+		fprintf(fp, "%s ", temp -> key);
+		while (temp -> value -> next != NULL){
+			fprintf(fp, "%c ", '1');
+			temp -> value = temp -> value -> next;
+		}
+		temp = temp -> next;
+	}
+
 }
 
+
 int main(int argc, char *argv[]) {
-	
+
 	if (argc < 2) {
+		printf("%d\n", argc);
 		printf("Less number of arguments.\n");
 		printf("./mapper mapperID\n");
 		exit(0);
 	}
+
+
 	// ###### DO NOT REMOVE ######
 	mapperID = strtol(argv[1], NULL, 10);
-
 	// ###### DO NOT REMOVE ######
 	// create folder specifically for this mapper in output/MapOut
-	// mapOutDir has the path to the folder where the outputs of 
+	// mapOutDir has the path to the folder where the outputs of
 	// this mapper should be stored
 	mapOutDir = createMapDir(mapperID);
-
 	// ###### DO NOT REMOVE ######
 	while(1) {
-		// create an array of chunkSize=1024B and intialize all 
+		printf("in mapper main loop\n");
+		// create an array of chunkSize=1024B and intialize all
 		// elements with '\0'
 		char chunkData[chunkSize + 1]; // +1 for '\0'
 		memset(chunkData, '\0', chunkSize + 1);
-
 		char *retChunk = getChunkData(mapperID);
 		if(retChunk == NULL) {
 			break;
