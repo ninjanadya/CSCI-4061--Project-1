@@ -1,5 +1,4 @@
 #include "reducer.h"
-
 finalKeyValueDS* fkvds;
 
 // create a key value node
@@ -45,14 +44,15 @@ void freeFinalDS(finalKeyValueDS *root) {
 
 // reduce function
 void reduce(char *key) {
-	char filename[256] = {};
-	int temp, count;
-	count = 0;
+	char filename[256];
+	//int i; //,count;
+	//count = 0;
+	int count = 0;
 	FILE* fp = fopen(key, "r");
 	fscanf(fp, "%s", filename);
 	
 	while(fgetc(fp) != EOF){
-		if(temp == 1){
+		if(fgetc(fp) == 1){
 			count++;
 		}
 	}
@@ -64,17 +64,23 @@ void reduce(char *key) {
 // write the contents of the final intermediate structure
 // to output/ReduceOut/Reduce_reducerID.txt
 void writeFinalDS(int reducerID){
-	finalKeyValueDS* temp = fkvds;
-	char filename[256] = {};
-	char* word = temp -> key;
-	FILE* fp;
-	sprintf(filename, "output/ReduceOut/Reducer_%d.txt", reducerID);
-	fp = fopen(filename, "w");
+	if (fkvds == NULL){
+		return;
+	}
 	
-	while(temp->next != NULL){
+	finalKeyValueDS* temp = fkvds -> next;
+	
+	char filename[256];
+	char* word = temp -> key;
+	
+	sprintf(filename, "output/ReduceOut/Reducer_%d.txt", reducerID);
+	FILE* fp = fopen(filename, "w");
+	
+	while(temp != NULL){
 		fprintf(fp, "%s ", temp -> key);
 		fprintf(fp, "%d ", temp -> value);
 		fputs("\n", fp);
+		fkvds = temp;
 		temp = temp -> next;
 	}
 	fclose(fp);
