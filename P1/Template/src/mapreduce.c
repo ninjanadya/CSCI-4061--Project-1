@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
 	int nMappers 	= strtol(argv[1], NULL, 10);
 	int nReducers 	= strtol(argv[2], NULL, 10);
 	char *inputFile = argv[3];
-	int mapperID;
+	int mapID;
 
 	// ###### DO NOT REMOVE ######
 	bookeepingCode();
@@ -31,21 +31,20 @@ int main(int argc, char *argv[]) {
 	// spawn mappers processes and run 'mapper' executable using exec
 pid_t childpid;
 	for (int i = 0; i < nMappers; i++){
-		if ((childpid = fork()) <= 0) {
-			mapperID = i + 1;
-			break;
+		if ((childpid = fork()) == 0) {
+			mapID = i + 1;
+			char s[256] = { 0 };
+			sprintf(s, "%d", mapID);
+			char* args[] = {"mapper", s, (char*) NULL};
+			execv("mapper", args);
 		}
 	}
 
-	if (pid > 0){
-		char s[12];
-		sprintf(s, "%d", mapperID);
-		char* args[] = {"mapper", s, (char*) NULL};
-		execv("mapper", args);
-	}
+
 	// To do
 	// wait for all children to complete execution
-
+	while (wait(NULL) > 0)
+	{}
 
 
 	// ###### DO NOT REMOVE ######
@@ -57,7 +56,6 @@ pid_t childpid;
 		exit(0);
 	}
 	sleep(1);
-
 
 	// To do
 	// spawn reducer processes and run 'reducer' executable using exec

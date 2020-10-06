@@ -11,6 +11,7 @@
 char *mapOutDir;
 int mapperID;
 
+//struct intermediateDS* IDS = NULL;
 
 // You are free to change the intermediate data structure as it suits you
 // If you do so, ensure the provided utility functions are also changed
