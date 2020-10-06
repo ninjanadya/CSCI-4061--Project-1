@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 
-extern struct intermediateDS* IDS;
+intermediateDS* IDS = NULL;
 
 // combined value list corresponding to a word <1,1,1,1....>
 valueList *createNewValueListNode(char *value){
@@ -81,19 +81,19 @@ void freeInterDS(intermediateDS *root) {
 
 // emit the <key, value> into intermediate DS
 void emit(char *key, char *value) {
-	//printf("in emit\nkey %s value %s", key, value);
+
 	IDS = insertPairToInterDS(IDS, key, value);
 }
 
 // map function
 void map(char *chunkData){
-	printf("in map\n");
 	// you can use getWord to retrieve words from the
 	// chunkData one by one. Example usage in utils.h
 	int i = 0;
-	char *buffer;
+	char* buffer;
 	char value = '1';
 	while ((buffer = getWord(chunkData, &i)) != NULL){
+		//printf("map loop\n");
 		emit(buffer, &value);
 	}
 }
@@ -101,10 +101,14 @@ void map(char *chunkData){
 // write intermediate data to separate word.txt files
 // Each file will have only one line : word 1 1 1 1 1 ...
 void writeIntermediateDS() {
-	struct intermediateDS* temp = IDS;
-	FILE* fp;
-	while (temp -> next != NULL){
-		fp = fopen(strcat(temp -> key, ".txt"), "w");
+	 intermediateDS* temp = IDS;
+	 FILE* fp;
+	 while (temp -> next != NULL){
+		char* word = temp -> key;
+		char filename[256] = {};
+		sprintf(filename, "output/MapOut/Map_%d/%s.txt", mapperID, word);
+		//printf("filename %s\n", filename);
+		fp = fopen(filename, "w");
 		fprintf(fp, "%s ", temp -> key);
 		while (temp -> value -> next != NULL){
 			fprintf(fp, "%c ", '1');
@@ -112,14 +116,13 @@ void writeIntermediateDS() {
 		}
 		temp = temp -> next;
 	}
-
 }
 
 
 int main(int argc, char *argv[]) {
 
 	if (argc < 2) {
-		printf("%d\n", argc);
+
 		printf("Less number of arguments.\n");
 		printf("./mapper mapperID\n");
 		exit(0);
@@ -135,7 +138,7 @@ int main(int argc, char *argv[]) {
 	mapOutDir = createMapDir(mapperID);
 	// ###### DO NOT REMOVE ######
 	while(1) {
-		printf("in mapper main loop\n");
+
 		// create an array of chunkSize=1024B and intialize all
 		// elements with '\0'
 		char chunkData[chunkSize + 1]; // +1 for '\0'
@@ -153,6 +156,5 @@ int main(int argc, char *argv[]) {
 
 	// ###### DO NOT REMOVE ######
 	writeIntermediateDS();
-
 	return 0;
 }
