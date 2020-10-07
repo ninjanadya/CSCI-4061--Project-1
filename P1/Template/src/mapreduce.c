@@ -37,6 +37,8 @@ pid_t childpid;
 			sprintf(s, "%d", mapID);
 			char* args[] = {"mapper", s, (char*) NULL};
 			execv("mapper", args);
+			// execv only returns if there was an error
+			printf("error with execv() on mapper %d\n", mapID);
 		}
 	}
 
@@ -71,6 +73,8 @@ pid_t childpid;
 			reducerID = i+1;
 			sprintf(sR, "%d", reducerID);
 			execl("./reducer", "./reducer", sR, NULL); 
+			// execv only returns if there was an error
+			printf("error with execv() on reducer %d\n", reducerID);
 			/*mapID = i + 1;
 			char s[256] = { 0 };
 			sprintf(s, "%d", mapID);
