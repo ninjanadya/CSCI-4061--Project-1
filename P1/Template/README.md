@@ -19,7 +19,7 @@ example:
 * Nadya: wrote the needed functions in reducer.c and the reduce-related part of mapreduce.c
 * Both team members also helped debug code written by the other.
 
-* test machine : CSE LAB_machine_name
+* test machine : apollo.cselabs.umn.edu
 * date : 10/05/20
 * name : Nadya Postolaki , Sean Berg
 * x500 : posto018 , berg2007
