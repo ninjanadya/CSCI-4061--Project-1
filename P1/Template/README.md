@@ -4,7 +4,7 @@
 * compile it by going into the project file and using the following command
 $ make
 
-*it is run with the following usage:
+* it is run with the following usage:
 $ ./mapreduce num_of_mappers num_of_reducers filename
 example:
 % ./mapreduce 5 2 test/T1/F1.txt
