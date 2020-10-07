@@ -70,16 +70,11 @@ pid_t childpid;
 	int reducerID;
 	for (int i = 0; i < nReducers; i++){
 		if ((childRedPID = fork()) == 0) {
-			reducerID = i+1;
-			sprintf(sR, "%d", reducerID);
+			reducerID = i+1; //add 1 to i since loop begins at 0 and ends before we reach the size of nReducers
+			sprintf(sR, "%d", reducerID); //saving reducerID into sR that was declared earlier
 			execl("./reducer", "./reducer", sR, NULL); 
-			// execv only returns if there was an error
+			// execl only returns if there was an error
 			printf("error with execv() on reducer %d\n", reducerID);
-			/*mapID = i + 1;
-			char s[256] = { 0 };
-			sprintf(s, "%d", mapID);
-			char* args[] = {"mapper", s, (char*) NULL};
-			execv("mapper", args);*/
 		}
 	}
 
@@ -88,8 +83,13 @@ pid_t childpid;
 	// wait for all children to complete execution
 
 	for (int i=0; i<nReducers; i++){
-		wait(NULL);
+		wait(NULL); //idk man, what do u want me to write here, its kinda obvious that we're just waiting xD
 	}
 	
 	return 0;
 }
+
+
+
+//this is a comment to test whether you're actually reading our comments (insert the emoji with just the eyes here)
+//if you did read this comment, pls pls pls tell me your best pun in the comments of the assignment submission :D

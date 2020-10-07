@@ -44,17 +44,17 @@ void freeFinalDS(finalKeyValueDS *root) {
 
 // reduce function
 void reduce(char *key) {
-	char filename[256];
+	char filename[256];	
 	int temp; //,count;
 	//count = 0;
 	int count = 0;
 	FILE* fp = fopen(key, "r");
-	fscanf(fp, "%s", filename);
+	fscanf(fp, "%s", filename); 
 	
-	while(temp = fgetc(fp) != EOF){
-		if(temp == 1){
-			count++;
-		}
+	while(temp = fgetc(fp) != EOF){ //we save fgetc(fp) into a temp variable and make sure it 
+		if(temp == 1){		//doesnt hit the end of file to prevent an infinite loop
+			count++;	//temp is then compared to calculate the number of appearances
+		}			//it makes in the file
 	}
 	fkvds = insertNewKeyValue(fkvds, filename, count);
 	fclose(fp);
@@ -68,14 +68,16 @@ void writeFinalDS(int reducerID){
 		return;
 	}
 	
-	finalKeyValueDS* temp = fkvds -> next;
+	finalKeyValueDS* temp = fkvds -> next; //set up a temp value in the linked list to preserve the value of the root "fkvds"
 	
 	char filename[256];
 	char* word = temp -> key;
 	
+	//building the file name with the file path and including the reducerID
 	sprintf(filename, "output/ReduceOut/Reducer_%d.txt", reducerID);
 	FILE* fp = fopen(filename, "w");
 	
+	//as in mapper, we iterate through the linked list and write to the file
 	while(temp != NULL){
 		fprintf(fp, "%s ", temp -> key);
 		fprintf(fp, "%d ", temp -> value);
