@@ -109,7 +109,10 @@ void writeIntermediateDS() {
 		sprintf(filename, "output/MapOut/Map_%d/%s.txt", mapperID, word);
 		//printf("filename %s\n", filename);
 		fp = fopen(filename, "w");
-		fprintf(fp, "%s ", temp -> key);
+		if (fp == NULL){
+			printf("error opening file: %s\n", filename);
+		}
+		fprintf(fp, "%s 1 ", temp -> key);
 		while (temp -> value -> next != NULL){
 			fprintf(fp, "%c ", '1');
 			temp -> value = temp -> value -> next;
